@@ -1,9 +1,11 @@
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 class Main {
   public static void main(String[] args) {
     String inputraw=".###.#...#.#.##.#.####.. .#....#####...#.######.. #.#.###.###.#.....#.#### ##.###..##..####.#.####. ###########.#######.##.# ##########.#########.##. .#.##.########.##...###. ###.#.##.#####.#.###.### ##.#####.##..###.#.##.#. .#.#.#####.####.#..##### .###.#####.#..#..##.#.## ########.##.#...######## .####..##..#.###.###.#.# ....######.##.#.######.# ###.####.######.#....### ############.#.#.##.#### ##...##..####.####.#..## .###.#########.###..#.## #.##.#.#...##...#####..# ##.#..###############.## ##.###.#####.##.######.. ##.#####.#.#.##..####### ...#######.######...#### #....#.#.#.####.#.#.#.##";
-    String raw2=".#..# ..... ##### ....# ...##";
     String[] input=inputraw.split(" ");
     char[][] map=new char[input.length][input[0].length()];
     for(int i=0;i<map.length;i++){
@@ -48,8 +50,6 @@ class Main {
                   resi=i;
                   resj=j;
                 }
-                
-                
               }
             }
           }
@@ -60,5 +60,62 @@ class Main {
     System.out.println(res);
     System.out.println(resi);
     System.out.println(resj);
+    System.out.println(part2(map,resi,resj));
+  }
+  public static int part2(char[][] map, int i, int j){
+    int m=0;
+    int n=0;
+    Queue<point> queue= new PriorityQueue<point>(i*j,new Comparator<Node>() {
+    public int compare(point p1, point p2) {
+        return Double.compare(p1.k, p2.k);
+    }
+});
+    for(m=0;m<map.length;m++){
+      for(n=0;n<map[0].length;n++){
+        if(map[m][n]=='.'){
+          continue;
+        }
+        else{
+          int[][] position={{m,n}};
+          double pi=Math.PI;
+          double anta=0.5*pi-Math.atan2(n, m);
+          double adjusted=anta<0?anta+2*pi:anta;
+          double mooded=adjusted%(2*pi);
+          float distance=Math.abs(m-i)+Math.abs(n-j);
+          point p=new point(position,mooded,distance);
+          queue.add(p);
+        }
+      }
+    }
+    double cur=queue.poll().k;
+    for(int index=1;index<200;){
+      for(point p:queue){
+        if(p.position[0][0]==i+1){
+          continue;
+        }
+        else{
+          if(p.k>cur){
+            m=p.position[0][0];
+            n=p.position[0][1];
+            p.position[0][0]=i+1;
+            cur=k;
+            i++;
+          }
+
+        }
+      }
+    }
+    return m*100+n;
+
+  }
+}
+class point{
+  int[][] position;
+  double k;
+  float distance;
+  public point(int[][] p, double atan, float dis){
+    position=p;
+    k=atan;
+    distance=dis;
   }
 }
