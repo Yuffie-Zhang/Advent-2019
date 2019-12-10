@@ -72,8 +72,13 @@ class Main {
         i+=4;
         break;
         case 3:
-        m=signalused?lastout:sig;
-        signalused=signalused?false:true;
+        if(!signalused){
+          m=sig;
+          signalused=true;
+        }
+        else{
+          m=lastout;
+        }
         input[input[i+1]]=m;
         i+=2;
         break;
